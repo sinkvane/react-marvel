@@ -4,7 +4,7 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
 import { useEffect, useState } from 'react';
 
-const CharList = () => {
+const CharList = ({ onCharSelected }) => {
 	const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [charList, setCharList] = useState([]);
@@ -33,7 +33,7 @@ const CharList = () => {
 			}
 
 			return (
-				<li className="char__item" key={item.id}>
+				<li className="char__item" key={item.id} onClick={() => onCharSelected(item.id)}>
 					<img src={item.thumbnail} alt={item.name} style={imgStyle} />
 					<div className="char__name">{item.name}</div>
 				</li>
@@ -43,8 +43,6 @@ const CharList = () => {
 	};
 
 	const items = renderCharList(charList);
-
-	console.log('delpoy test');
 
 	const errorMessage = error ? <ErrorMessage /> : null;
 	const spinner = loading ? <Spinner /> : null;

@@ -71,7 +71,7 @@ const View = ({ char }) => {
 		<div className="randomchar__block">
 			<img
 				src={thumbnail}
-				alt="Random character"
+				alt={name}
 				className="randomchar__img"
 				style={thumbnailObjectFit ? { objectFit: 'contain' } : { objectFit: 'cover' }}
 			/>
