@@ -44,6 +44,8 @@ const CharList = () => {
 
 	const items = renderCharList(charList);
 
+	console.log('delpoy test');
+
 	const errorMessage = error ? <ErrorMessage /> : null;
 	const spinner = loading ? <Spinner /> : null;
 	const content = !(loading || error) ? items : null;
