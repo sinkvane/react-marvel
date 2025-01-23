@@ -66,11 +66,12 @@ const View = ({ char }) => {
     
     const { name, thumbnail, description, home, wiki } = char;
 
-    const thumbnailObjectFit = thumbnail.includes('image_not_available') ? 'style:{object-fit:contain}' : ''
+    let thumbnailObjectFit = thumbnail.includes('image_not_available');
+    console.log(thumbnailObjectFit);
     
     return (
         <div className="randomchar__block">
-        <img src={thumbnail} alt="Random character" className="randomchar__img"/>
+            <img src={thumbnail} alt="Random character" className="randomchar__img" style={thumbnailObjectFit ? {objectFit: 'contain'}: {objectFit: 'cover'}} />
         <div className="randomchar__info">
             <p className="randomchar__name">{name}</p>
             <p className="randomchar__descr">
