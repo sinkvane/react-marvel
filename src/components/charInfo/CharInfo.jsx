@@ -14,8 +14,8 @@ const CharInfo = ({ charId }) => {
 
 	const onCharLoaded = (char) => {
 		setError(false);
-		setChar(char);
 		setLoading(false);
+		setChar(char);
 	};
 
 	const onCharLoading = () => {
@@ -31,18 +31,14 @@ const CharInfo = ({ charId }) => {
 		if (!charId) {
 			return;
 		}
-
 		onCharLoading();
-
 		marvelService.getCharacter(charId).then(onCharLoaded).catch(onError);
 	};
 
-	useEffect(
-		(updateChar) => {
-			updateChar();
-		},
-		[charId, updateChar]
-	);
+	useEffect(() => {
+		updateChar();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [charId]);
 
 	const skeleton = char || error || loading ? null : <Skeleton />;
 	const errorMessage = error ? <ErrorMessage /> : null;
@@ -51,10 +47,10 @@ const CharInfo = ({ charId }) => {
 
 	return (
 		<div className="char__info">
-			{skeleton}
 			{errorMessage}
 			{spinner}
 			{content}
+			{skeleton}
 		</div>
 	);
 };
@@ -62,10 +58,15 @@ const CharInfo = ({ charId }) => {
 const View = ({ char }) => {
 	const { name, description, wiki, home, thumbnail, comics } = char;
 
+	let imgStyle = { objectFit: 'cover' };
+	if (thumbnail.includes('image_not_available')) {
+		imgStyle = { objectFit: 'unset' };
+	}
+
 	return (
 		<>
 			<div className="char__basics">
-				<img src={thumbnail} alt={name} />
+				<img src={thumbnail} alt={name} style={imgStyle} />
 				<div>
 					<div className="char__info-name">{name}</div>
 					<div className="char__btns">
@@ -83,8 +84,7 @@ const View = ({ char }) => {
 			<ul className="char__comics-list">
 				{comics.length > 0 ? null : 'There is no comics with this character'}
 				{comics.map((item, i) => {
-					// eslint-disable-next-line
-					if (i > 9) return;
+					if (i > 9) return null;
 					return (
 						<li key={i} className="char__comics-item">
 							{item.name}

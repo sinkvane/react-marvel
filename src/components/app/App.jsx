@@ -7,7 +7,7 @@ import { useState } from 'react';
 import decoration from '../../resources/img/vision.png';
 
 const App = () => {
-	const [char, selectChar] = useState('');
+	const [char, selectChar] = useState(null);
 
 	const onCharSelected = (id) => {
 		selectChar(id);
@@ -20,7 +20,7 @@ const App = () => {
 				<RandomChar />
 				<div className="char__content">
 					<CharList onCharSelected={onCharSelected} />
-					<CharInfo charID={char} />
+					<CharInfo charId={char} />
 				</div>
 				<img className="bg-decoration" src={decoration} alt="vision" />
 			</main>
