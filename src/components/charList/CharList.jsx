@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import './charList.scss';
 import MarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -88,6 +89,10 @@ const CharList = ({ onCharSelected }) => {
 			</button>
 		</div>
 	);
+};
+
+CharList.propTypes = {
+	onCharSelected: PropTypes.func.isRequired,
 };
 
 export default CharList;
