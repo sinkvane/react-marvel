@@ -6,9 +6,10 @@ import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 const ComicsList = () => {
+	const offsetRandomize = Math.floor(Math.random() * (10 - 200) + 200);
 	const [comicsList, setComicsList] = useState([]);
 	const [newItemLoading, setNewItemLoading] = useState(false);
-	const [offset, setOffset] = useState(Math.floor(Math.random() * (10 - 200) + 200));
+	const [offset, setOffset] = useState(offsetRandomize);
 	const [comicsEnded, setComicsEnded] = useState(false);
 
 	const { error, loading, getAllComics } = useMarvelService();
