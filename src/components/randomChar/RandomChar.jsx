@@ -1,40 +1,33 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './randomChar.scss';
 import mjolnir from '../../resources/img/mjolnir.png';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import { useEffect, useState } from 'react';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 const RandomChar = () => {
-	const marvelService = new MarvelService();
+	const { loading, error, getCharacter, clearError } = useMarvelService();
 
 	const [char, setChar] = useState('');
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(false);
 
 	useEffect(() => {
 		updateChar();
+		const timerId = setInterval(updateChar, 60000);
+
+		return () => {
+			clearInterval(timerId);
+		};
 	}, []);
 
 	const onCharLoaded = (char) => {
-		setError(false);
 		setChar(char);
-		setLoading(false);
-	};
-
-	const onCharLoading = (loading) => {
-		setLoading(true);
-	};
-
-	const onError = () => {
-		setLoading(false);
-		setError(true);
 	};
 
 	const updateChar = () => {
+		clearError();
 		const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-		onCharLoading();
-		marvelService.getCharacter(id).then(onCharLoaded).catch(onError);
+		getCharacter(id).then(onCharLoaded);
 	};
 
 	const errorMessage = error ? <ErrorMessage /> : null;
@@ -65,7 +58,8 @@ const RandomChar = () => {
 const View = ({ char }) => {
 	const { name, thumbnail, description, home, wiki } = char;
 
-	let thumbnailObjectFit = thumbnail.includes('image_not_available');
+	const defaultThumbnail = '';
+	let thumbnailObjectFit = (thumbnail || defaultThumbnail).includes('image_not_available');
 
 	return (
 		<div className="randomchar__block">

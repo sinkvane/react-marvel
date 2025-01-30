@@ -1,32 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from 'prop-types';
 import './charList.scss';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
 import { useEffect, useRef, useState } from 'react';
 
 const CharList = ({ onCharSelected }) => {
-	const [error, setError] = useState(false);
-	const [loading, setLoading] = useState(true);
 	const [charList, setCharList] = useState([]);
 	const [newItemLoading, setNewItemLoading] = useState(false);
 	const [offset, setOffset] = useState(210);
 	const [charEnded, setCharEnded] = useState(false);
 
-	const marvelService = new MarvelService();
+	const { loading, error, getAllCharacters } = useMarvelService();
 
-	const onCharListLoading = () => {
-		setNewItemLoading(true);
-	};
-
-	const onRequest = (offset) => {
-		onCharListLoading();
-		marvelService.getAllCharacters(offset).then(onCharListLoaded).catch(onError);
+	const onRequest = (offset, initial) => {
+		initial ? setNewItemLoading(false) : setNewItemLoading(true);
+		getAllCharacters(offset).then(onCharListLoaded);
 	};
 
 	useEffect(() => {
-		onRequest();
+		onRequest(offset, true);
 	}, []);
 
 	const onCharListLoaded = (newCharList) => {
@@ -37,15 +31,9 @@ const CharList = ({ onCharSelected }) => {
 		}
 
 		setCharList((prevCharList) => [...prevCharList, ...newCharList]);
-		setLoading(false);
 		setNewItemLoading(false);
 		setOffset((offset) => offset + 9);
 		setCharEnded(ended);
-	};
-
-	const onError = () => {
-		setError(true);
-		setLoading(false);
 	};
 
 	const itemRefs = useRef([]);
@@ -58,9 +46,13 @@ const CharList = ({ onCharSelected }) => {
 
 	const renderCharList = (arr) => {
 		const items = arr.map((item, i) => {
-			let imgStyle = { objectFit: 'cover' };
+			let imgStyle = {
+				objectFit: 'cover',
+			};
 			if (item.thumbnail.includes('image_not_available')) {
-				imgStyle = { objectFit: 'unset' };
+				imgStyle = {
+					objectFit: 'unset',
+				};
 			}
 
 			return (
@@ -91,20 +83,26 @@ const CharList = ({ onCharSelected }) => {
 	const items = renderCharList(charList);
 
 	const errorMessage = error ? <ErrorMessage /> : null;
-	const spinner = loading ? <Spinner /> : null;
-	const content = !(loading || error) ? items : null;
+	const spinner = loading && !newItemLoading ? <Spinner /> : null;
 
 	return (
 		<div className="char__list">
-			<ul className="char__grid" style={{ gridTemplateColumns: spinner ? '1fr' : 'repeat(3, 200px' }}>
+			<ul
+				className="char__grid"
+				style={{
+					gridTemplateColumns: spinner ? '1fr' : 'repeat(3, 200px',
+				}}
+			>
 				{errorMessage}
 				{spinner}
-				{content}
+				{items}
 			</ul>
 			<button
 				className="button button__main button__long"
 				disabled={newItemLoading ? true : false}
-				style={{ display: charEnded ? 'none' : 'block' }}
+				style={{
+					display: charEnded ? 'none' : 'block',
+				}}
 				onClick={() => {
 					onRequest(offset);
 				}}
