@@ -2,8 +2,8 @@ import './charInfo.scss';
 import useMarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
-import Skeleton from '../skeleton/Skeleton';
 import { useEffect, useState } from 'react';
+import Skeleton from '../skeleton/Skeleton';
 
 const CharInfo = ({ charId }) => {
 	const { error, loading, getCharacter, clearError } = useMarvelService();
