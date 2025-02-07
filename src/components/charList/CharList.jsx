@@ -5,12 +5,15 @@ import useMarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
 import { useEffect, useRef, useState } from 'react';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 const CharList = ({ onCharSelected }) => {
 	const [charList, setCharList] = useState([]);
 	const [newItemLoading, setNewItemLoading] = useState(false);
 	const [offset, setOffset] = useState(210);
 	const [charEnded, setCharEnded] = useState(false);
+
+	const nodeRef = useRef(null);
 
 	const { loading, error, getAllCharacters } = useMarvelService();
 
@@ -56,28 +59,30 @@ const CharList = ({ onCharSelected }) => {
 			}
 
 			return (
-				<li
-					className="char__item"
-					ref={(el) => (itemRefs.current[i] = el)}
-					tabIndex={0}
-					key={item.id}
-					onClick={() => {
-						onCharSelected(item.id);
-						focusOnItem(i);
-					}}
-					onKeyDown={(e) => {
-						if (e.key === '' || e.key === 'Enter') {
+				<CSSTransition nodeRef={nodeRef} key={item.id} timeout={500} classNames="char__item">
+					<li
+						className="char__item"
+						ref={(el) => (itemRefs.current[i] = el)}
+						tabIndex={0}
+						key={item.id}
+						onClick={() => {
 							onCharSelected(item.id);
 							focusOnItem(i);
-						}
-					}}
-				>
-					<img src={item.thumbnail} alt={item.name} style={imgStyle} />
-					<div className="char__name">{item.name}</div>
-				</li>
+						}}
+						onKeyDown={(e) => {
+							if (e.key === '' || e.key === 'Enter') {
+								onCharSelected(item.id);
+								focusOnItem(i);
+							}
+						}}
+					>
+						<img src={item.thumbnail} alt={item.name} style={imgStyle} />
+						<div className="char__name">{item.name}</div>
+					</li>
+				</CSSTransition>
 			);
 		});
-		return items;
+		return <TransitionGroup component={null}>{items}</TransitionGroup>;
 	};
 
 	const items = renderCharList(charList);
